@@ -200,14 +200,16 @@ Every render:
 ─────────────
 1. set_page_config()          (must be first Streamlit call)
 2. Logging config             (idempotent)
-3. _init_session_state()      (sets defaults; no-op if keys exist)
-4. Auth gate:
+3. cookie_manager instantiation  stx.CookieManager(key="cm_singleton")
+                                  renders an invisible iframe (write/delete only)
+4. _init_session_state()      (sets defaults; no-op if keys exist)
+5. Auth gate:
      token = st.context.cookies.get(COOKIE_NAME)    ← synchronous, always correct
      if token valid → set session_state (authenticated, username, token)
      if not authenticated → _show_login_form() → st.stop()
-5. st.navigation(position="hidden")   ← only reached when authenticated
-6. Sidebar (Welcome + nav links + Logout button)
-7. pg.run()                           ← executes the page the URL points to
+6. st.navigation(position="hidden")   ← only reached when authenticated
+7. Sidebar (Welcome + nav links + Logout button)
+8. pg.run()                           ← executes the page the URL points to
 ```
 
 ### `st.session_state` keys
@@ -492,6 +494,7 @@ CREATE TABLE sessions (
 
 ```
 streamlit>=1.37.0
+extra-streamlit-components>=0.1.71
 ```
 
 For MySQL migration, add:
